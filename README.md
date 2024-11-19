@@ -1,3 +1,3 @@
-# Name
+# Personal Library Back-end
 
-Description
+Back-end for the [Personal Library](https://gideonadeti-personal-library.vercel.app) application

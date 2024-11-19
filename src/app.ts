@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
-import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import indexRouter from "./routes/index";
@@ -12,7 +11,6 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 // API Routes
 app.use("/api", indexRouter);

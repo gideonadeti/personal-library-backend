@@ -20,12 +20,14 @@ server.on("listening", onListening);
 
 function normalizePort(val: string) {
   const portNumber = parseInt(val, 10);
+
   if (isNaN(portNumber)) {
-    return val; // named pipe
+    return val;
   }
   if (portNumber >= 0) {
-    return portNumber; // port number
+    return portNumber;
   }
+
   return false;
 }
 
@@ -40,11 +42,9 @@ function onError(error: NodeJS.ErrnoException) {
     case "EACCES":
       console.error(`${bind} requires elevated privileges`);
       process.exit(1);
-      break;
     case "EADDRINUSE":
       console.error(`${bind} is already in use`);
       process.exit(1);
-      break;
     default:
       throw error;
   }
@@ -53,5 +53,6 @@ function onError(error: NodeJS.ErrnoException) {
 function onListening() {
   const addr = server.address();
   const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr?.port}`;
+  
   logger(`Listening on ${bind}`);
 }
