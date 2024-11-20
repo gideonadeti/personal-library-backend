@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const logger = debug("app:server");
+const logger = debug("personal-library-backend:server");
 const port = normalizePort(process.env.PORT || "3000");
 
 app.set("port", port);
