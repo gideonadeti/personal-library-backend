@@ -12,39 +12,47 @@ const port = normalizePort(process.env.PORT || "3000");
 
 app.set("port", port);
 
-const server = http.createServer(app);
+let server = http.createServer(app);
 
-server.listen(port);
-server.on("error", onError);
-server.on("listening", onListening);
+function startServer(port: number) {
+  server = http.createServer(app);
 
-function normalizePort(val: string) {
-  const portNumber = parseInt(val, 10);
-
-  if (isNaN(portNumber)) {
-    return val;
-  }
-  if (portNumber >= 0) {
-    return portNumber;
-  }
-
-  return false;
+  server.listen(port);
+  server.on("error", (error) => onError(error, port));
+  server.on("listening", onListening);
 }
 
-function onError(error: NodeJS.ErrnoException) {
+startServer(port);
+
+function normalizePort(val: string): number {
+  const portNumber = parseInt(val, 10);
+
+  if (isNaN(portNumber) || portNumber <= 0 || portNumber > 65535) {
+    throw new Error("Invalid port number");
+  }
+
+  return portNumber;
+}
+
+function onError(error: NodeJS.ErrnoException, currentPort: number) {
   if (error.syscall !== "listen") {
     throw error;
   }
 
-  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+  const bind = `Port ${currentPort}`;
 
   switch (error.code) {
     case "EACCES":
       console.error(`${bind} requires elevated privileges`);
       process.exit(1);
     case "EADDRINUSE":
-      console.error(`${bind} is already in use`);
-      process.exit(1);
+      console.error(`${bind} is already in use. Trying next port...`);
+
+      const nextPort = currentPort + 1;
+
+      startServer(nextPort);
+
+      break;
     default:
       throw error;
   }
@@ -53,6 +61,6 @@ function onError(error: NodeJS.ErrnoException) {
 function onListening() {
   const addr = server.address();
   const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${addr?.port}`;
-  
+
   logger(`Listening on ${bind}`);
 }
