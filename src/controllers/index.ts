@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { readGroups } from "../../prisma/db";
+import { getCache, setCache } from "../utils/cache";
 
 export async function indexController(req: Request, res: Response) {
   const { userId } = req.query;
@@ -10,7 +11,15 @@ export async function indexController(req: Request, res: Response) {
   }
 
   try {
+    const cashedGroups = await getCache(userId as string);
+
+    if (cashedGroups) {
+      return res.json(cashedGroups);
+    }
+
     const groups = await readGroups(userId as string);
+
+    await setCache(userId as string, groups);
 
     res.json(groups);
   } catch (err) {
