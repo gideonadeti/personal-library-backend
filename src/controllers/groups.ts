@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 
-import { readGroups, createGroup, readGroup } from "../../prisma/db";
+import {
+  readGroups,
+  createGroup,
+  readGroup,
+  updateGroup,
+} from "../../prisma/db";
 import { clearCache, getCache, setCache } from "../utils/cache";
 
 export async function handleGroupsGet(req: Request, res: Response) {
@@ -55,5 +60,35 @@ export async function handleGroupsPost(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while creating group" });
+  }
+}
+
+export async function handleGroupsPut(req: Request, res: Response) {
+  const { groupId } = req.params;
+  const { userId, name } = req.body;
+
+  if (!groupId || !userId || !name) {
+    return res
+      .status(400)
+      .json({ errMsg: "groupId, userId and name are required" });
+  }
+
+  try {
+    const group = await readGroup(userId, name.trim());
+
+    if (group) {
+      return res.status(400).json({ errMsg: "Group already exist" });
+    }
+
+    await updateGroup(groupId, name.trim());
+    await clearCache(`/groups?userId=${userId}`);
+
+    res.json({ msg: "Group updated successfully" });
+  } catch (err) {
+    console.error("Something went wrong while updating group:", err);
+
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while updating group" });
   }
 }
