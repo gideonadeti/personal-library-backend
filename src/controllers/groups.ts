@@ -5,6 +5,7 @@ import {
   createGroup,
   readGroup,
   updateGroup,
+  deleteGroup,
 } from "../../prisma/db";
 import { clearCache, getCache, setCache } from "../utils/cache";
 
@@ -90,5 +91,27 @@ export async function handleGroupsPut(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while updating group" });
+  }
+}
+
+export async function handleGroupsDelete(req: Request, res: Response) {
+  const { userId } = req.query;
+  const { groupId } = req.params;
+
+  if (!userId || !groupId) {
+    return res.status(400).json({ errMsg: "userId and groupId are required" });
+  }
+
+  try {
+    await deleteGroup(groupId);
+    await clearCache(`/groups?userId=${userId}`);
+
+    res.json({ msg: "Group deleted successfully" });
+  } catch (err) {
+    console.error("Something went wrong while deleting group:", err);
+
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while deleting group" });
   }
 }
