@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
-app.use("/api", groupsRouter);
+app.use("/api/groups", groupsRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
