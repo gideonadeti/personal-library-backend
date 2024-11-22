@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import cors from "cors";
 
-import indexRouter from "./routes/index";
+import groupsRouter from "./routes/groups";
 
 const app = express();
 
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
-app.use("/api", indexRouter);
+app.use("/api", groupsRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

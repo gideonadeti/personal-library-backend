@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { readGroups } from "../../prisma/db";
 import { getCache, setCache } from "../utils/cache";
 
-export async function indexController(req: Request, res: Response) {
+export async function handleGroupsGet(req: Request, res: Response) {
   const { userId } = req.query;
 
   if (!userId) {
@@ -11,19 +11,19 @@ export async function indexController(req: Request, res: Response) {
   }
 
   try {
-    const cashedGroups = await getCache(userId as string);
+    const cashedGroups = await getCache(`/groups?userId=${userId}`);
 
     if (cashedGroups) {
-      return res.json(cashedGroups);
+      return res.json({ groups: cashedGroups });
     }
 
     const groups = await readGroups(userId as string);
 
-    await setCache(userId as string, groups);
+    await setCache(`/groups?userId=${userId}`, groups);
 
-    res.json(groups);
-  } catch (err) {
-    console.error("Error reading groups:", err);
+    res.json({ groups });
+  } catch (error) {
+    console.error("Error reading groups:", error);
 
     res
       .status(500)
