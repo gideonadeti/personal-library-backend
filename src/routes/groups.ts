@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { handleGroupsGet } from "../controllers/groups";
+import { handleGroupsGet, handleGroupsPost } from "../controllers/groups";
 
 const router = Router();
 
-router.get("/groups", handleGroupsGet);
+router.get("/", handleGroupsGet);
+router.post("/", handleGroupsPost);
 
 export default router;

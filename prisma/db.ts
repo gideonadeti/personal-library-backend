@@ -29,3 +29,35 @@ export async function readGroups(userId: string) {
     throw err;
   }
 }
+
+export async function createGroup(userId: string, name: string) {
+  try {
+    await prismaClient.group.create({
+      data: {
+        userId: userId,
+        name: name,
+      },
+    });
+  } catch (err) {
+    console.error("Error creating group:", err);
+
+    throw err;
+  }
+}
+
+export async function readGroup(userId: string, name: string) {
+  try {
+    const group = await prismaClient.group.findFirst({
+      where: {
+        userId,
+        name,
+      },
+    });
+
+    return group;
+  } catch (err) {
+    console.error("Error reading group:", err);
+
+    throw err;
+  }
+}

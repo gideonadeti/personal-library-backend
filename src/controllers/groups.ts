@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-import { readGroups } from "../../prisma/db";
-import { getCache, setCache } from "../utils/cache";
+import { readGroups, createGroup, readGroup } from "../../prisma/db";
+import { clearCache, getCache, setCache } from "../utils/cache";
 
 export async function handleGroupsGet(req: Request, res: Response) {
   const { userId } = req.query;
 
   if (!userId) {
-    return res.status(400).json({ ErrMsg: "userId is required" });
+    return res.status(400).json({ errMsg: "userId is required" });
   }
 
   try {
@@ -27,6 +27,33 @@ export async function handleGroupsGet(req: Request, res: Response) {
 
     res
       .status(500)
-      .json({ ErrMsg: "Something went wrong while reading groups" });
+      .json({ errMsg: "Something went wrong while reading groups" });
+  }
+}
+
+export async function handleGroupsPost(req: Request, res: Response) {
+  const { userId, name } = req.body;
+
+  if (!userId || !name) {
+    return res.status(400).json({ errMsg: "userId and name are required" });
+  }
+
+  try {
+    const group = await readGroup(userId, name.trim());
+
+    if (group) {
+      return res.status(400).json({ errMsg: "Group already exist" });
+    }
+
+    await createGroup(userId, name.trim());
+    await clearCache(`/groups?userId=${userId}`);
+
+    res.status(201).json({ msg: "Group created successfully" });
+  } catch (err) {
+    console.error("Something went wrong while creating group:", err);
+
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while creating group" });
   }
 }
