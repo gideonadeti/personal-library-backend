@@ -108,3 +108,40 @@ export async function readAuthors(userId: string) {
     throw err;
   }
 }
+
+export async function createAuthor(
+  userId: string,
+  name: string,
+  description: string
+) {
+  try {
+    await prismaClient.author.create({
+      data: {
+        userId,
+        name,
+        description,
+      },
+    });
+  } catch (err) {
+    console.error("Error creating author:", err);
+
+    throw err;
+  }
+}
+
+export async function readAuthor(userId: string, name: string) {
+  try {
+    const author = await prismaClient.author.findFirst({
+      where: {
+        userId,
+        name,
+      },
+    });
+
+    return author;
+  } catch (err) {
+    console.error("Error reading author:", err);
+
+    throw err;
+  }
+}
