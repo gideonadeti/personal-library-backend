@@ -3,6 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 
 import groupsRouter from "./routes/groups";
+import authorsRouter from "./routes/authors";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 app.use("/api/groups", groupsRouter);
+app.use("/api/authors", authorsRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

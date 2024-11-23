@@ -92,3 +92,19 @@ export async function deleteGroup(groupId: string) {
     throw err;
   }
 }
+
+export async function readAuthors(userId: string) {
+  try {
+    const authors = await prismaClient.author.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return authors;
+  } catch (err) {
+    console.error("Error reading authors:", err);
+
+    throw err;
+  }
+}
