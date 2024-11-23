@@ -145,3 +145,19 @@ export async function readAuthor(userId: string, name: string) {
     throw err;
   }
 }
+
+export async function readGenres(userId: string) {
+  try {
+    const genres = await prismaClient.genre.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return genres;
+  } catch (err) {
+    console.error("Error reading genres:", err);
+
+    throw err;
+  }
+}

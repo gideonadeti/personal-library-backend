@@ -4,6 +4,7 @@ import cors from "cors";
 
 import groupsRouter from "./routes/groups";
 import authorsRouter from "./routes/authors";
+import genresRouter from "./routes/genres";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use("/api/groups", groupsRouter);
 app.use("/api/authors", authorsRouter);
+app.use("/api/genres", genresRouter);
 
 // 404 handler
 app.use((req: Request, res: Response) => {
