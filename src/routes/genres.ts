@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { handleGenresGet } from "../controllers/genres";
+import { handleGenresGet, handleGenresPost } from "../controllers/genres";
 
 const router = Router();
 
 router.get("/", handleGenresGet);
+router.post("/", handleGenresPost);
 
 export default router;

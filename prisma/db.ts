@@ -161,3 +161,40 @@ export async function readGenres(userId: string) {
     throw err;
   }
 }
+
+export async function readGenre(userId: string, name: string) {
+  try {
+    const genre = await prismaClient.genre.findFirst({
+      where: {
+        userId,
+        name,
+      },
+    });
+
+    return genre;
+  } catch (err) {
+    console.error("Error reading genre:", err);
+
+    throw err;
+  }
+}
+
+export async function createGenre(
+  userId: string,
+  name: string,
+  description: string
+) {
+  try {
+    await prismaClient.genre.create({
+      data: {
+        userId,
+        name,
+        description,
+      },
+    });
+  } catch (err) {
+    console.error("Error creating genre:", err);
+
+    throw err;
+  }
+}
