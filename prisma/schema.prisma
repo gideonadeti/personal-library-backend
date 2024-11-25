@@ -29,12 +29,11 @@ model Book {
   userId      String
   groupId     String
   authorId    String
-  genreId     String
   title       String
   description String
   group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   author      Author   @relation(fields: [authorId], references: [id])
-  genre       Genre    @relation(fields: [genreId], references: [id])
+  genres      Genre[]
   status      Status   @default(unread)
   favorite    Boolean  @default(false)
   notes       Note[]
@@ -42,7 +41,7 @@ model Book {
   updatedAt   DateTime @updatedAt
 }
 
-model Author {
+model Genre {
   id          String   @id @default(cuid())
   userId      String
   name        String
@@ -52,7 +51,7 @@ model Author {
   updatedAt   DateTime @updatedAt
 }
 
-model Genre {
+model Author {
   id          String   @id @default(cuid())
   userId      String
   name        String
