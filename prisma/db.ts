@@ -214,3 +214,57 @@ export async function readBooks(userId: string) {
     throw err;
   }
 }
+
+export async function readBook(
+  userId: string,
+  title: string,
+  groupId: string,
+  authorId: string
+) {
+  try {
+    const book = await prismaClient.book.findFirst({
+      where: {
+        userId,
+        title,
+        groupId,
+        authorId,
+      },
+    });
+
+    return book;
+  } catch (err) {
+    console.error("Error reading book:", err);
+
+    throw err;
+  }
+}
+
+export async function createBook(
+  userId: string,
+  title: string,
+  description: string,
+  groupId: string,
+  authorId: string,
+  genreIds: string[]
+) {
+  try {
+    await prismaClient.book.create({
+      data: {
+        userId,
+        title,
+        description,
+        groupId,
+        authorId,
+        genres: {
+          connect: genreIds.map((genreId) => ({ id: genreId })),
+        },
+      },
+    });
+
+    return "Book created successfully!";
+  } catch (err) {
+    console.error("Error creating book:", err);
+
+    throw err;
+  }
+}
