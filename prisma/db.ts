@@ -8,6 +8,9 @@ export async function readGroups(userId: string) {
       where: {
         userId: userId,
       },
+      include: {
+        books: true,
+      },
     });
 
     if (groups.length === 0) {
@@ -99,6 +102,9 @@ export async function readAuthors(userId: string) {
       where: {
         userId: userId,
       },
+      include: {
+        books: true,
+      },
     });
 
     return authors;
@@ -152,6 +158,9 @@ export async function readGenres(userId: string) {
       where: {
         userId: userId,
       },
+      include: {
+        books: true,
+      },
     });
 
     return genres;
@@ -204,6 +213,10 @@ export async function readBooks(userId: string) {
     const books = await prismaClient.book.findMany({
       where: {
         userId: userId,
+      },
+      include: {
+        genres: true,
+        notes: true,
       },
     });
 
