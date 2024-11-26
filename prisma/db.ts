@@ -217,6 +217,8 @@ export async function readBooks(userId: string) {
       include: {
         genres: true,
         notes: true,
+        author: true,
+        group: true,
       },
     });
 
