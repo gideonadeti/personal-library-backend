@@ -55,6 +55,9 @@ export async function handleBooksPost(req: Request, res: Response) {
       genreIds
     );
     await clearCache(`/books?userId=${userId}`);
+    await clearCache(`/groups?userId=${userId}`);
+    await clearCache(`/authors?userId=${userId}`);
+    genreIds.length > 0 && await clearCache(`/genres?userId=${userId}`);
 
     res.status(201).json({ msg: "Book created successfully" });
   } catch (err) {
