@@ -5,7 +5,7 @@
   "main": "./build/index.js",
   "scripts": {
     "dev": "nodemon --watch src --exec ts-node index.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node ./build/index.js"
   },
   "author": "Gideon Adeti",
