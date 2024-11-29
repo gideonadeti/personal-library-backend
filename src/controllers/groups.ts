@@ -83,6 +83,7 @@ export async function handleGroupsPut(req: Request, res: Response) {
 
     await updateGroup(groupId, name.trim());
     await clearCache(`/groups?userId=${userId}`);
+    await clearCache(`/books?userId=${userId}`);
 
     res.json({ msg: "Group updated successfully" });
   } catch (err) {
@@ -106,8 +107,6 @@ export async function handleGroupsDelete(req: Request, res: Response) {
     await deleteGroup(groupId);
     await clearCache(`/groups?userId=${userId}`);
     await clearCache(`/books?userId=${userId}`);
-    await clearCache(`/authors?userId=${userId}`);
-    await clearCache(`/genres?userId=${userId}`);
 
     res.json({ msg: "Group deleted successfully" });
   } catch (err) {
