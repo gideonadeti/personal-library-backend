@@ -346,7 +346,12 @@ export async function readBook2(
         genres: {
           every: {
             id: {
-              in: genreIds,
+              in: genreIds, // All genres in the book must exist in genreIds
+            },
+          },
+          none: {
+            id: {
+              notIn: genreIds, // No extra genres outside genreIds
             },
           },
         },

@@ -88,9 +88,9 @@ export async function handleBooksPut(req: Request, res: Response) {
     const book = await readBook2(
       bookId,
       title,
+      description,
       groupId,
       authorId,
-      description,
       genreIds
     );
 
