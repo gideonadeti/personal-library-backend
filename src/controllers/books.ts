@@ -109,7 +109,7 @@ export async function handleBooksPut(req: Request, res: Response) {
     await clearCache(`/books?userId=${userId}`);
     await clearCache(`/groups?userId=${userId}`);
     await clearCache(`/authors?userId=${userId}`);
-    genreIds.length > 0 && (await clearCache(`/genres?userId=${userId}`));
+    await clearCache(`/genres?userId=${userId}`);
 
     res.json({ msg: "Book updated successfully" });
   } catch (err) {
