@@ -325,3 +325,68 @@ export async function createNote(
     throw err;
   }
 }
+
+// Check if book exists during update
+export async function readBook2(
+  bookId: string,
+  title: string,
+  description: string,
+  groupId: string,
+  authorId: string,
+  genreIds: string[]
+) {
+  try {
+    const book = await prismaClient.book.findFirst({
+      where: {
+        id: bookId,
+        title,
+        description,
+        groupId,
+        authorId,
+        genres: {
+          every: {
+            id: {
+              in: genreIds,
+            },
+          },
+        },
+      },
+    });
+
+    return book;
+  } catch (err) {
+    console.error("Error reading book2:", err);
+
+    throw err;
+  }
+}
+
+export async function updateBook(
+  bookId: string,
+  title: string,
+  description: string,
+  groupId: string,
+  authorId: string,
+  genreIds: string[]
+) {
+  try {
+    await prismaClient.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        title,
+        description,
+        groupId,
+        authorId,
+        genres: {
+          set: genreIds.map((genreId) => ({ id: genreId })),
+        },
+      },
+    });
+  } catch (err) {
+    console.error("Error updating book:", err);
+
+    throw err;
+  }
+}
