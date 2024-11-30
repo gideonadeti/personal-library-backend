@@ -283,3 +283,45 @@ export async function createBook(
     throw err;
   }
 }
+
+export async function readNote(
+  userId: string,
+  bookId: string,
+  content: string
+) {
+  try {
+    const note = await prismaClient.note.findFirst({
+      where: {
+        userId,
+        bookId,
+        content,
+      },
+    });
+
+    return note;
+  } catch (err) {
+    console.error("Error creating note:", err);
+
+    throw err;
+  }
+}
+
+export async function createNote(
+  userId: string,
+  bookId: string,
+  content: string
+) {
+  try {
+    await prismaClient.note.create({
+      data: {
+        userId,
+        bookId,
+        content,
+      },
+    });
+  } catch (err) {
+    console.error("Error creating note:", err);
+
+    throw err;
+  }
+}
