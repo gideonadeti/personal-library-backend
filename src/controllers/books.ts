@@ -7,6 +7,8 @@ import {
   readBook2,
   updateBook,
   patchBook,
+  patchBook2,
+  readBook3,
 } from "../../prisma/db";
 import { getCache, setCache, clearCache } from "../utils/cache";
 
@@ -123,7 +125,7 @@ export async function handleBooksPut(req: Request, res: Response) {
 
 export async function handleBooksPatch(req: Request, res: Response) {
   const { bookId } = req.params;
-  const { userId } = req.body;
+  const { userId, status } = req.body;
 
   console.log(bookId, userId);
 
@@ -131,16 +133,38 @@ export async function handleBooksPatch(req: Request, res: Response) {
     return res.status(400).json({ errMsg: "bookId and userId are required" });
   }
 
-  try {
-    await patchBook(bookId);
-    await clearCache(`/books?userId=${userId}`);
+  // Means user is updating a book's status
+  if (status) {
+    try {
+      const book = await readBook3(bookId, status);
 
-    res.sendStatus(204);
-  } catch (err) {
-    console.error("Something went wrong while patching book:", err);
+      if (book) {
+        return res.status(400).json({ errMsg: "Book status unchanged" });
+      }
 
-    res
-      .status(500)
-      .json({ errMsg: "Something went wrong while toggling favorite status" });
+      await patchBook2(bookId, status);
+      await clearCache(`/books?userId=${userId}`);
+
+      res.json({ msg: "Book status updated successfully" });
+    } catch (err) {
+      console.error("Something went wrong while patching book2:", err);
+
+      res
+        .status(500)
+        .json({ errMsg: "Something went wrong while updating book status" });
+    }
+  } else {
+    try {
+      await patchBook(bookId);
+      await clearCache(`/books?userId=${userId}`);
+
+      res.sendStatus(204);
+    } catch (err) {
+      console.error("Something went wrong while patching book:", err);
+
+      res.status(500).json({
+        errMsg: "Something went wrong while toggling favorite status",
+      });
+    }
   }
 }

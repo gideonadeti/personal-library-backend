@@ -423,3 +423,39 @@ export async function patchBook(bookId: string) {
     throw err;
   }
 }
+
+// Update book status
+export async function patchBook2(bookId: string, status: string) {
+  try {
+    await prismaClient.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        status: status as "unread" | "reading" | "read",
+      },
+    });
+  } catch (err) {
+    console.error("Error patching book:", err);
+
+    throw err;
+  }
+}
+
+// Check if same book with same status exists
+export async function readBook3(bookId: string, status: string) {
+  try {
+    const book = await prismaClient.book.findFirst({
+      where: {
+        id: bookId,
+        status: status as "unread" | "reading" | "read",
+      },
+    });
+
+    return book;
+  } catch (err) {
+    console.error("Error reading book3:", err);
+
+    throw err;
+  }
+}
