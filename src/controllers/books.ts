@@ -6,6 +6,7 @@ import {
   createBook,
   readBook2,
   updateBook,
+  patchBook,
 } from "../../prisma/db";
 import { getCache, setCache, clearCache } from "../utils/cache";
 
@@ -117,5 +118,29 @@ export async function handleBooksPut(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while updating book" });
+  }
+}
+
+export async function handleBooksPatch(req: Request, res: Response) {
+  const { bookId } = req.params;
+  const { userId } = req.body;
+
+  console.log(bookId, userId);
+
+  if (!bookId || !userId) {
+    return res.status(400).json({ errMsg: "bookId and userId are required" });
+  }
+
+  try {
+    await patchBook(bookId);
+    await clearCache(`/books?userId=${userId}`);
+
+    res.sendStatus(204);
+  } catch (err) {
+    console.error("Something went wrong while patching book:", err);
+
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while toggling favorite status" });
   }
 }

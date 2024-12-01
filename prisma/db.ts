@@ -395,3 +395,31 @@ export async function updateBook(
     throw err;
   }
 }
+
+// Toggle favorite
+export async function patchBook(bookId: string) {
+  try {
+    const book = await prismaClient.book.findUnique({
+      where: {
+        id: bookId,
+      },
+    });
+
+    if (!book) {
+      throw new Error("Book not found");
+    }
+
+    await prismaClient.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        favorite: !book.favorite,
+      },
+    });
+  } catch (err) {
+    console.error("Error patching book:", err);
+
+    throw err;
+  }
+}
