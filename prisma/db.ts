@@ -115,17 +115,12 @@ export async function readAuthors(userId: string) {
   }
 }
 
-export async function createAuthor(
-  userId: string,
-  name: string,
-  description: string
-) {
+export async function createAuthor(userId: string, name: string) {
   try {
     await prismaClient.author.create({
       data: {
         userId,
         name,
-        description,
       },
     });
   } catch (err) {
@@ -188,17 +183,12 @@ export async function readGenre(userId: string, name: string) {
   }
 }
 
-export async function createGenre(
-  userId: string,
-  name: string,
-  description: string
-) {
+export async function createGenre(userId: string, name: string) {
   try {
     await prismaClient.genre.create({
       data: {
         userId,
         name,
-        description,
       },
     });
   } catch (err) {

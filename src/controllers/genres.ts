@@ -31,7 +31,7 @@ export async function handleGenresGet(req: Request, res: Response) {
 }
 
 export async function handleGenresPost(req: Request, res: Response) {
-  const { userId, name, description } = req.body;
+  const { userId, name } = req.body;
 
   if (!userId || !name) {
     return res.status(400).json({ errMsg: "userId and name are required" });
@@ -44,7 +44,7 @@ export async function handleGenresPost(req: Request, res: Response) {
       return res.status(400).json({ errMsg: "Genre already exist" });
     }
 
-    await createGenre(userId, name.trim(), description.trim());
+    await createGenre(userId, name.trim());
     await clearCache(`/genres?userId=${userId}`);
 
     res.status(201).json({ msg: "Genre created successfully" });

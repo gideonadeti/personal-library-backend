@@ -31,7 +31,7 @@ export async function handleAuthorsGet(req: Request, res: Response) {
 }
 
 export async function handleAuthorsPost(req: Request, res: Response) {
-  const { userId, name, description } = req.body;
+  const { userId, name } = req.body;
 
   if (!userId || !name) {
     return res.status(400).json({ errMsg: "userId and name are required" });
@@ -44,7 +44,7 @@ export async function handleAuthorsPost(req: Request, res: Response) {
       return res.status(400).json({ errMsg: "Author already exist" });
     }
 
-    await createAuthor(userId, name.trim(), description.trim());
+    await createAuthor(userId, name.trim());
     await clearCache(`/authors?userId=${userId}`);
 
     res.status(201).json({ msg: "Author created successfully" });
