@@ -67,7 +67,7 @@ export async function handleBooksPost(req: Request, res: Response) {
     await clearCache(`/books?userId=${userId}`);
     await clearCache(`/groups?userId=${userId}`);
     await clearCache(`/authors?userId=${userId}`);
-    genreIds.length > 0 && (await clearCache(`/genres?userId=${userId}`));
+    await clearCache(`/genres?userId=${userId}`);
 
     res.status(201).json({ msg: "Book created successfully" });
   } catch (err) {
@@ -156,6 +156,7 @@ export async function handleBooksPatch(req: Request, res: Response) {
     }
   } else {
     try {
+      // Means user is updating a book's favorite status
       await patchBook(bookId);
       await clearCache(`/books?userId=${userId}`);
 
