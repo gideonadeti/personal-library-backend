@@ -459,3 +459,17 @@ export async function readBook3(bookId: string, status: string) {
     throw err;
   }
 }
+
+export async function deleteBook(bookId: string) {
+  try {
+    await prismaClient.book.delete({
+      where: {
+        id: bookId,
+      },
+    });
+  } catch (err) {
+    console.error("Error deleting book:", err);
+
+    throw err;
+  }
+}

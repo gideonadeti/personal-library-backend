@@ -9,6 +9,7 @@ import {
   patchBook,
   patchBook2,
   readBook3,
+  deleteBook,
 } from "../../prisma/db";
 import { getCache, setCache, clearCache } from "../utils/cache";
 
@@ -166,5 +167,29 @@ export async function handleBooksPatch(req: Request, res: Response) {
         errMsg: "Something went wrong while toggling favorite status",
       });
     }
+  }
+}
+
+export async function handleBooksDelete(req: Request, res: Response) {
+  const { bookId } = req.params;
+  const { userId } = req.query;
+
+  if (!bookId || !userId) {
+    return res.status(400).json({ errMsg: "bookId and userId are required" });
+  }
+
+  try {
+    await deleteBook(bookId);
+    await clearCache(`/books?userId=${userId}`);
+    await clearCache(`/groups?userId=${userId}`);
+    await clearCache(`/authors?userId=${userId}`);
+    await clearCache(`/genres?userId=${userId}`);
+
+    res.json({ msg: "Book deleted successfully" });
+  } catch (err) {
+    console.error("Something went wrong while deleting book:", err);
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while deleting book" });
   }
 }
