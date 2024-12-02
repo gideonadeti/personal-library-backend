@@ -83,7 +83,6 @@ export async function handleGroupsPut(req: Request, res: Response) {
 
     await updateGroup(groupId, name.trim());
     await clearCache(`/groups?userId=${userId}`);
-    await clearCache(`/books?userId=${userId}`);
 
     res.json({ msg: "Group updated successfully" });
   } catch (err) {
