@@ -32,7 +32,7 @@ model Book {
   title       String
   description String
   group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  author      Author   @relation(fields: [authorId], references: [id])
+  author      Author   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   genres      Genre[]
   status      Status   @default(unread)
   favorite    Boolean  @default(false)
