@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 
-import { readAuthors, createAuthor, readAuthor } from "../../prisma/db";
+import {
+  readAuthors,
+  createAuthor,
+  readAuthor,
+  updateAuthor,
+} from "../../prisma/db";
 import { getCache, setCache, clearCache } from "../utils/cache";
 
 export async function handleAuthorsGet(req: Request, res: Response) {
@@ -53,5 +58,34 @@ export async function handleAuthorsPost(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while creating author" });
+  }
+}
+
+export async function handleAuthorsPut(req: Request, res: Response) {
+  const { authorId } = req.params;
+  const { userId, name } = req.body;
+
+  if (!authorId || !userId || !name) {
+    return res
+      .status(400)
+      .json({ errMsg: "authorId, userId and name are required" });
+  }
+
+  try {
+    const author = await readAuthor(userId, name.trim());
+
+    if (author) {
+      return res.status(400).json({ errMsg: "Author already exist" });
+    }
+
+    await updateAuthor(authorId, name.trim());
+    await clearCache(`/authors?userId=${userId}`);
+
+    res.json({ msg: "Author updated successfully" });
+  } catch (err) {
+    console.error("Something went wrong while updating author:", err);
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while updating author" });
   }
 }
