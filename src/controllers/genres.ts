@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { readGenres, readGenre, createGenre } from "../../prisma/db";
+import { readGenres, readGenre, createGenre, updateGenre } from "../../prisma/db";
 import { getCache, setCache, clearCache } from "../utils/cache";
 
 export async function handleGenresGet(req: Request, res: Response) {
@@ -53,5 +53,33 @@ export async function handleGenresPost(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while creating genre" });
+  }
+}
+
+export async function handleGenresPut(req: Request, res: Response) {
+  const { genreId } = req.params;
+  const { userId, name } = req.body;
+
+  if (!genreId || !userId || !name) {
+    return res.status(400).json({ errMsg: "genreId, userId and name are required" });
+  }
+
+  try {
+    const genre = await readGenre(userId, name.trim());
+
+    if (genre) {
+      return res.status(400).json({ errMsg: "Genre already exist" });
+    }
+
+    await updateGenre(genreId, name.trim());
+    await clearCache(`/genres?userId=${userId}`);
+    await clearCache(`/books?userId=${userId}`);
+
+    res.json({ msg: "Genre updated successfully" });
+  } catch (err) {
+    console.error("Something went wrong while updating genre:", err);
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while updating genre" });
   }
 }

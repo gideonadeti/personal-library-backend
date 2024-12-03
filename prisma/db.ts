@@ -494,3 +494,20 @@ export async function deleteAuthor(authorId: string) {
     throw err;
   }
 }
+
+export async function updateGenre(genreId: string, name: string) {
+  try {
+    await prismaClient.genre.update({
+      where: {
+        id: genreId,
+      },
+      data: {
+        name,
+      },
+    });
+  } catch (err) {
+    console.error("Error updating genre:", err);
+
+    throw err;
+  }
+}
