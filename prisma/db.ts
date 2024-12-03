@@ -480,3 +480,17 @@ export async function updateAuthor(authorId: string, name: string) {
     throw err;
   }
 }
+
+export async function deleteAuthor(authorId: string) {
+  try {
+    await prismaClient.author.delete({
+      where: {
+        id: authorId,
+      },
+    });
+  } catch (err) {
+    console.error("Error deleting author:", err);
+
+    throw err;
+  }
+}

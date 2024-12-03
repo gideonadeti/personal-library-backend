@@ -5,6 +5,7 @@ import {
   createAuthor,
   readAuthor,
   updateAuthor,
+  deleteAuthor,
 } from "../../prisma/db";
 import { getCache, setCache, clearCache } from "../utils/cache";
 
@@ -80,6 +81,7 @@ export async function handleAuthorsPut(req: Request, res: Response) {
 
     await updateAuthor(authorId, name.trim());
     await clearCache(`/authors?userId=${userId}`);
+    await clearCache(`/books?userId=${userId}`);
 
     res.json({ msg: "Author updated successfully" });
   } catch (err) {
@@ -87,5 +89,29 @@ export async function handleAuthorsPut(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while updating author" });
+  }
+}
+
+export async function handleAuthorsDelete(req: Request, res: Response) {
+  const { authorId } = req.params;
+  const { userId } = req.query;
+
+  if (!authorId || !userId) {
+    return res.status(400).json({ errMsg: "authorId and userId are required" });
+  }
+
+  try {
+    await deleteAuthor(authorId);
+    await clearCache(`/authors?userId=${userId}`);
+    await clearCache(`/groups?userId=${userId}`);
+    await clearCache(`/books?userId=${userId}`);
+    await clearCache(`/genres?userId=${userId}`);
+
+    res.json({ msg: "Author deleted successfully" });
+  } catch (err) {
+    console.error("Something went wrong while deleting author:", err);
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while deleting author" });
   }
 }
