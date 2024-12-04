@@ -511,3 +511,17 @@ export async function updateGenre(genreId: string, name: string) {
     throw err;
   }
 }
+
+export async function deleteGenre(genreId: string) {
+  try {
+    await prismaClient.genre.delete({
+      where: {
+        id: genreId,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+
+    throw err;
+  }
+}

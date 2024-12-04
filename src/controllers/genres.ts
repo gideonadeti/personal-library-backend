@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 
-import { readGenres, readGenre, createGenre, updateGenre } from "../../prisma/db";
+import {
+  readGenres,
+  readGenre,
+  createGenre,
+  updateGenre,
+  deleteGenre,
+} from "../../prisma/db";
 import { getCache, setCache, clearCache } from "../utils/cache";
 
 export async function handleGenresGet(req: Request, res: Response) {
@@ -61,7 +67,9 @@ export async function handleGenresPut(req: Request, res: Response) {
   const { userId, name } = req.body;
 
   if (!genreId || !userId || !name) {
-    return res.status(400).json({ errMsg: "genreId, userId and name are required" });
+    return res
+      .status(400)
+      .json({ errMsg: "genreId, userId and name are required" });
   }
 
   try {
@@ -81,5 +89,27 @@ export async function handleGenresPut(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while updating genre" });
+  }
+}
+
+export async function handleGenresDelete(req: Request, res: Response) {
+  const { genreId } = req.params;
+  const { userId } = req.query;
+
+  if (!genreId || !userId) {
+    return res.status(400).json({ errMsg: "genreId and userId are required" });
+  }
+
+  try {
+    await deleteGenre(genreId);
+    await clearCache(`/genres?userId=${userId}`);
+    await clearCache(`/books?userId=${userId}`);
+
+    res.json({ msg: "Genre deleted successfully" });
+  } catch (err) {
+    console.error("Something went wrong while deleting genre:", err);
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while deleting genre" });
   }
 }
