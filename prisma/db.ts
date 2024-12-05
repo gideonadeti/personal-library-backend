@@ -525,3 +525,20 @@ export async function deleteGenre(genreId: string) {
     throw err;
   }
 }
+
+export async function updateNote(noteId: string, content: string) {
+  try {
+    await prismaClient.note.update({
+      where: {
+        id: noteId,
+      },
+      data: {
+        content,
+      },
+    });
+  } catch (err) {
+    console.error("Error updating note:", err);
+
+    throw err;
+  }
+}
