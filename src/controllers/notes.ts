@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { readNote, createNote, updateNote } from "../../prisma/db";
+import { readNote, createNote, updateNote, deleteNote } from "../../prisma/db";
 import { clearCache } from "../utils/cache";
 
 export async function handleNotesPost(req: Request, res: Response) {
@@ -55,5 +55,26 @@ export async function handleNotesPut(req: Request, res: Response) {
     res
       .status(500)
       .json({ errMsg: "Something went wrong while updating note" });
+  }
+}
+
+export async function handleNotesDelete(req: Request, res: Response) {
+  const { noteId } = req.params;
+  const { userId } = req.query;
+
+  if (!userId || !noteId) {
+    return res.status(400).json({ errMsg: "userId and noteId are required" });
+  }
+
+  try {
+    await deleteNote(noteId);
+    await clearCache(`/books?userId=${userId}`);
+
+    res.json({ msg: "Note deleted successfully" });
+  } catch (err) {
+    console.error("Something went wrong while deleting note:", err);
+    res
+      .status(500)
+      .json({ errMsg: "Something went wrong while deleting note" });
   }
 }

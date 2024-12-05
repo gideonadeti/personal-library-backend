@@ -542,3 +542,17 @@ export async function updateNote(noteId: string, content: string) {
     throw err;
   }
 }
+
+export async function deleteNote(noteId: string) {
+  try {
+    await prismaClient.note.delete({
+      where: {
+        id: noteId,
+      },
+    });
+  } catch (err) {
+    console.error("Error deleting note:", err);
+
+    throw err;
+  }
+}
