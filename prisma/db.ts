@@ -346,6 +346,9 @@ export async function readBook2(
           },
         },
       },
+      include: {
+        genres: true
+      }
     });
 
     return book;

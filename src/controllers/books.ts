@@ -98,7 +98,8 @@ export async function handleBooksPut(req: Request, res: Response) {
       genreIds
     );
 
-    if (book) {
+    // Checking if genres length and genreIds length are equal confirms an exact match
+    if (book && book.genres.length === genreIds.length) { 
       return res.status(400).json({ errMsg: "Book already exist" });
     }
 
