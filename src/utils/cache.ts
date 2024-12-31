@@ -14,7 +14,7 @@ export async function getCache(key: string) {
 
 export async function setCache(key: string, value: any) {
   try {
-    await redisClient.set(key, JSON.stringify(value));
+    await redisClient.set(key, JSON.stringify(value), { EX: 86400 }); // 86400 seconds = 1 day
   } catch (err) {
     console.error("Error setting cache:", err);
   }
